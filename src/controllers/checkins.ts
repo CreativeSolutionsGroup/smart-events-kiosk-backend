@@ -1,7 +1,7 @@
 import { CheckInInput, EventInput } from './../models/checkin';
 import Express from "express";
 import { google } from "googleapis";
-import { sheet_auth } from "../utils/sheets";
+import { serialize_rows, sheet_auth } from "../utils/sheets";
 import { v4 } from 'uuid';
 
 const EVENT_SHEET_ID = "EVENTS";
@@ -34,10 +34,10 @@ export const create_event: Express.RequestHandler = async (req, res) => {
   const insert_result = await sheet.spreadsheets.values.append({
     spreadsheetId: process.env.SHEET_ID,
     auth: sheet_auth(),
-    range: CHECKIN_SHEET_ID,
+    range: EVENT_SHEET_ID,
     valueInputOption: "RAW",
     requestBody: {
-      values: [[v4(), event.alias, Date.now().toLocaleString()]]
+      values: [[v4(), event.alias, Date.now()]]
     }
   });
 
@@ -46,4 +46,15 @@ export const create_event: Express.RequestHandler = async (req, res) => {
 
 export const read_all_events: Express.RequestHandler = async (req, res) => {
   const sheet = google.sheets("v4");
+
+  const read_result = await sheet.spreadsheets.values.get({
+    spreadsheetId: process.env.SHEET_ID,
+    auth: sheet_auth(),
+    range: `${EVENT_SHEET_ID}!A1:D`
+  });
+
+  const rows = read_result.data.values as string[][];
+  const ser = serialize_rows(rows);
+
+  res.json(ser);
 }

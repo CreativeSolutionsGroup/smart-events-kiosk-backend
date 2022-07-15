@@ -1,12 +1,22 @@
 export interface Event {
-    id: string,
-    alias: string,
-    created: Date
+  id: string,
+  alias: string,
+  created: Date
+}
+
+export interface EventInput {
+  id: string,
+  alias: string
 }
 
 export interface CheckIn {
-    id: string,
-    event: string,
-    student_id: string,
-    created: Date
+  id: string,
+  event: string,
+  student_id: string,
+  created: Date
+}
+
+export interface CheckInInput {
+  event: string,
+  student_id: string
 }

@@ -5,7 +5,6 @@ export interface Event {
 }
 
 export interface EventInput {
-  id: string,
   alias: string
 }
 

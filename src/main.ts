@@ -22,7 +22,7 @@ v1.route("/checkin")
 
 app.use("/v1", v1);
 
-const port = process.env.PORT ?? 8081;
+const port = process.env.PORT ?? 3001;
 
 app.listen(port, function () {
   console.log("Listening on " + port);

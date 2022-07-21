@@ -5,8 +5,9 @@ COPY ./pnpm-lock.yaml .
 COPY ./package.json .
 COPY ./LICENSE .
 COPY ./tsconfig.json .
+COPY ./.swcrc .
 RUN npm i
-RUN npm run build-i
+RUN npm run build:internal
 
 FROM node:16.13.1 AS runtime
 WORKDIR /app

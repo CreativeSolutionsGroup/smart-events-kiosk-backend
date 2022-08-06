@@ -3,9 +3,12 @@ import { google } from "googleapis";
 export const sheet_auth = () => {
   console.log("Authenticating with the following...")
   console.log(process.env.SERVICE_KEY, process.env.SERVICE_EMAIL)
+
+  let split_key = process.env.SERVICE_KEY?.split('\\n').join("\n")
+
   const auth = new google.auth.JWT({
     email: process.env.SERVICE_EMAIL,
-    key: process.env.SERVICE_KEY,
+    key: split_key,
     scopes: ["https://www.googleapis.com/auth/spreadsheets"]
   })
 

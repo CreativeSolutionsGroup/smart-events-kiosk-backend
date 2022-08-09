@@ -42,12 +42,18 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    environment: Main Deploy Lightsail
+    environment: production
     permissions:
       contents: read
       packages: write
 
     steps:
+      - name: Mask
+        run: |
+          echo "::add-mask::${{ env.SERVICE_KEY }}"
+          echo "::add-mask::${{ env.SERVICE_EMAIL }}"
+          echo "::add-mask::${{ env.SHEET_ID }}"
+        
       - name: Checkout repository
         uses: actions/checkout@v3
 

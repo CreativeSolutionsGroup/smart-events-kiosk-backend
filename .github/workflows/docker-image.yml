@@ -42,6 +42,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    environment: Main Deploy Lightsail
     permissions:
       contents: read
       packages: write

@@ -3,8 +3,6 @@ name: Docker Image CI
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 env:
   REGISTRY: ghcr.io
@@ -42,6 +40,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
   deploy:
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -57,7 +56,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: 'us-east-2'
         run: |
-          | aws lightsail create-container-service-deployment --service-name kiosk-backend --containers "{
+          aws lightsail create-container-service-deployment --service-name kiosk-backend --containers "{
               \"kiosk-backend\": {
                 \"image\": \"ghcr.io/creativesolutionsgroup/smart-events-kiosk-backend:main\",
                 \"command\": [],

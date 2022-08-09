@@ -40,12 +40,12 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
   deploy:
+    environment: production
     needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-    environment: production
 
     steps:
       - name: Mask
@@ -68,10 +68,10 @@ jobs:
                 \"image\": \"ghcr.io/creativesolutionsgroup/smart-events-kiosk-backend:main\",
                 \"command\": [],
                 \"environment\": {
-                  \"SERVICE_KEY\": \"${{env.SERVICE_KEY}}\",
+                  \"SERVICE_KEY\": \"${{secrets.SERVICE_KEY}}\",
                   \"PORT\": \"80\",
-                  \"SERVICE_EMAIL\": \"${{env.SERVICE_EMAIL}}\",
-                  \"SHEET_ID\": \"${{env.SHEET_ID}}\"
+                  \"SERVICE_EMAIL\": \"${{secrets.SERVICE_EMAIL}}\",
+                  \"SHEET_ID\": \"${{secrets.SHEET_ID}}\"
                 },
                 \"ports\": {
                   \"80\": \"HTTP\"

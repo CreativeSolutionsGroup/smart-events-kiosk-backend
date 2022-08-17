@@ -16,6 +16,12 @@ export interface CheckIn {
 }
 
 export interface CheckInInput {
-  event: string,
+  mac_address: string
   student_id: string
+}
+
+export interface RPI {
+  mac_address: string
+  rpi_name: string
+  event_id: string
 }

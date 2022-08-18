@@ -22,6 +22,6 @@ export interface CheckInInput {
 
 export interface RPI {
   mac_address: string
-  rpi_name: string
+  alias: string
   event_id: string
 }

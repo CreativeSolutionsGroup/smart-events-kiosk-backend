@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import { initHeartbeat } from "./utils/heartbeat";
 
 import dotenv from "dotenv";
 
@@ -22,8 +23,12 @@ v1.route("/checkin")
 
 app.use("/v1", v1);
 
+initHeartbeat(app)
+
 const port = process.env.PORT ?? 3001;
 
 app.listen(port, function () {
   console.log("Listening on " + port);
 })
+
+export {app}

@@ -7,7 +7,7 @@ import { parse_mag_stripe } from '../utils/card';
 
 const EVENT_SHEET_ID = "EVENTS";
 const CHECKIN_SHEET_ID = "CHECKINS";
-const RPI_SHEET_ID = "RPI";
+export const RPI_SHEET_ID = "RPI";
 
 export const create_check_in: Express.RequestHandler = async (req, res) => {
   let check_in: CheckInInput = req.body;

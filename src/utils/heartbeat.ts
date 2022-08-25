@@ -1,11 +1,46 @@
-import exprressWS from 'express-ws';
+import expressWS from 'express-ws';
+import { google } from 'googleapis';
+import { CLIENT_SHEET_ID } from '../controllers/checkins';
+import { Heartbeat, Client } from '../models/client';
+import { serialize_rows, sheet_auth } from './sheets';
 
 export const initHeartbeat = (app) => {
-    const ws = exprressWS(app);
-    
+    const ws = expressWS(app);
+
     ws.app.ws('/heartbeat', (ws, res) => {
-        ws.on('message', (message: string) => {
-            ws.send('ACK Heartbeat');
+        ws.on('message', async (message: string) => {
+            const hb: Heartbeat = JSON.parse(message);
+
+            console.log(hb);
+
+            const sheet = google.sheets("v4");
+            const read_result = await sheet.spreadsheets.values.get({
+                spreadsheetId: process.env.SHEET_ID,
+                auth: sheet_auth(),
+                range: `${CLIENT_SHEET_ID}!A1:E`
+            });
+
+            const rows = read_result.data.values as string[][];
+            const ser = serialize_rows(rows) as Array<Client>;
+
+            const clientIndex = ser.findIndex((r) => hb.mac_address === r.mac_address);
+            let client = ser[clientIndex];
+            const sheetIndex = clientIndex + 2;
+
+            client.last_heartbeat = Date.now();
+            const row = [...Object.values(client)];
+
+            const request = {
+                spreadsheetId: process.env.SHEET_ID,
+                range: "Client!A" + sheetIndex + ":E" + sheetIndex,
+                valueInputOption: "RAW",
+                auth: sheet_auth(),
+                resource: {
+                    values: [row]
+                }
+            }
+
+            sheet.spreadsheets.values.update(request);
         });
     })
 }

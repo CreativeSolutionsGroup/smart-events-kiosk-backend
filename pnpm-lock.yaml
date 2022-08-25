@@ -5,30 +5,40 @@ specifiers:
   '@swc/core': ^1.2.218
   '@types/cors': ^2.8.12
   '@types/express': ^4.17.13
+  '@types/express-ws': ^3.0.1
   '@types/node': ^18.0.4
   '@types/uuid': ^8.3.4
+  '@types/ws': ^8.5.3
   cors: ^2.8.5
   dotenv: ^16.0.1
   express: ^4.18.1
+  express-ws: ^5.0.2
   googleapis: ^105.0.0
   ts-node: ^10.9.1
   typescript: ^4.7.4
   uuid: ^8.3.2
+  websocket-ts: ^1.1.1
+  ws: ^8.8.1
 
 dependencies:
   '@types/cors': 2.8.12
   cors: 2.8.5
   dotenv: 16.0.1
   express: 4.18.1
+  express-ws: 5.0.2_express@4.18.1
   googleapis: 105.0.0
   uuid: 8.3.2
+  websocket-ts: 1.1.1
+  ws: 8.8.1
 
 devDependencies:
   '@swc/cli': 0.1.57_@swc+core@1.2.218
   '@swc/core': 1.2.218
   '@types/express': 4.17.13
+  '@types/express-ws': 3.0.1
   '@types/node': 18.0.4
   '@types/uuid': 8.3.4
+  '@types/ws': 8.5.3
   ts-node: 10.9.1_mhdlvah4urkfhon66senyhg2vi
   typescript: 4.7.4
 
@@ -275,6 +285,14 @@ packages:
       '@types/range-parser': 1.2.4
     dev: true
 
+  /@types/express-ws/3.0.1:
+    resolution: {integrity: sha512-VguRXzcpPBF0IggIGpUoM65cZJDfMQxoc6dKoCz1yLzcwcXW7ft60yhq3ygKhyEhEIQFtLrWjyz4AJ1qjmzCFw==}
+    dependencies:
+      '@types/express': 4.17.13
+      '@types/express-serve-static-core': 4.17.29
+      '@types/ws': 8.5.3
+    dev: true
+
   /@types/express/4.17.13:
     resolution: {integrity: sha512-6bSZTPaTIACxn48l50SR+axgrqm6qXFIxrdAKaG6PaJk3+zuUr35hBlgT7vOmJcum+OEaIBLtHV/qloEAFITeA==}
     dependencies:
@@ -309,6 +327,12 @@ packages:
 
   /@types/uuid/8.3.4:
     resolution: {integrity: sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==}
+    dev: true
+
+  /@types/ws/8.5.3:
+    resolution: {integrity: sha512-6YOoWjruKj1uLf3INHH7D3qTXwFfEsg1kf3c0uDdSBJwfa/llkwIjrAGV7j7mVgGNbzTQ3HiHKKDXl6bJPD97w==}
+    dependencies:
+      '@types/node': 18.0.4
     dev: true
 
   /abort-controller/3.0.0:
@@ -518,6 +542,19 @@ packages:
   /event-target-shim/5.0.1:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
     engines: {node: '>=6'}
+    dev: false
+
+  /express-ws/5.0.2_express@4.18.1:
+    resolution: {integrity: sha512-0uvmuk61O9HXgLhGl3QhNSEtRsQevtmbL94/eILaliEADZBHZOQUAiHFrGPrgsjikohyrmSG5g+sCfASTt0lkQ==}
+    engines: {node: '>=4.5.0'}
+    peerDependencies:
+      express: ^4.0.0 || ^5.0.0-alpha.1
+    dependencies:
+      express: 4.18.1
+      ws: 7.5.9
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
     dev: false
 
   /express/4.18.1:
@@ -1156,11 +1193,41 @@ packages:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
     dev: false
 
+  /websocket-ts/1.1.1:
+    resolution: {integrity: sha512-rm+S60J74Ckw5iizzgID12ju+OfaHAa6dhXhULIOrXkl0e05RzxfY42/vMStpz5jWL3iz9mkyjPcFUY1IgI0fw==}
+    dev: false
+
   /whatwg-url/5.0.0:
     resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
     dependencies:
       tr46: 0.0.3
       webidl-conversions: 3.0.1
+    dev: false
+
+  /ws/7.5.9:
+    resolution: {integrity: sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q==}
+    engines: {node: '>=8.3.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: ^5.0.2
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+    dev: false
+
+  /ws/8.8.1:
+    resolution: {integrity: sha512-bGy2JzvzkPowEJV++hF07hAD6niYSr0JzBNo/J29WsB57A2r7Wlc1UFcTR9IzrPvuNVO4B8LGqF8qcpsVOhJCA==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: ^5.0.2
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
     dev: false
 
   /yallist/4.0.0:

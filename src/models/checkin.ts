@@ -19,15 +19,3 @@ export interface CheckInInput {
   mac_address: string
   student_id: string
 }
-
-export interface RPI {
-  mac_address: string
-  alias: string
-  event_id: string
-  last_heartbeat: number
-  status: boolean
-}
-
-export interface Heartbeat {
-  mac_address: string
-}

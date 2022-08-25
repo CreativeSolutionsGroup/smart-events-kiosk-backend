@@ -50,9 +50,15 @@ export const update_one_client: Express.RequestHandler = async (req, res) => {
     const ser = serialize_rows(rows) as Array<Client>;
 
     const clientIndex = ser.findIndex((r) => id === r.mac_address);
+    let mut_client = ser[clientIndex];
     const sheetIndex = clientIndex + 2;
 
-    const row = [...Object.values(client)];
+    // We don't want people to change the mac address of the client.
+    delete client.mac_address;
+
+    mut_client = { ...mut_client, ...client };
+
+    const row = [...Object.values(mut_client)];
 
     const request = {
         spreadsheetId: process.env.SHEET_ID,

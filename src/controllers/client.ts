@@ -34,6 +34,25 @@ export const read_all_clients: Express.RequestHandler = async (req, res) => {
     res.json(clients);
 }
 
+export const create_client: Express.RequestHandler = async (req, res) => {
+    // Create new client from POST data
+    const new_client: Client = req.body;
+    
+    const sheet = google.sheets("v4");    
+
+    const request = {
+        spreadsheetId: process.env.SHEET_ID,
+        range: "Client",
+        valueInputOption: "RAW",
+        auth: sheet_auth(),
+        requestBody: {
+            values: [[new_client.mac_address, new_client.alias, '', 0, 0]]
+        }
+    }
+
+    sheet.spreadsheets.values.append(request);
+}
+
 export const update_one_client: Express.RequestHandler = async (req, res) => {
     const client: Client = req.body;
     const id = req.params.id;

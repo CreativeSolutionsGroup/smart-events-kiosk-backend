@@ -11,8 +11,6 @@ export const initHeartbeat = (app) => {
         ws.on('message', async (message: string) => {
             const hb: Heartbeat = JSON.parse(message);
 
-            console.log(hb);
-
             const sheet = google.sheets("v4");
             const read_result = await sheet.spreadsheets.values.get({
                 spreadsheetId: process.env.SHEET_ID,

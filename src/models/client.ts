@@ -1,5 +1,5 @@
 export interface Client {
-  mac_address: string
+  mac_address?: string
   alias: string
   event_id: string
   last_heartbeat: number

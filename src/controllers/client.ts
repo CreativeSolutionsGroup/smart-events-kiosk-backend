@@ -33,3 +33,61 @@ export const read_all_clients: Express.RequestHandler = async (req, res) => {
 
     res.json(clients);
 }
+
+export const create_client: Express.RequestHandler = async (req, res) => {
+    // Create new client from POST data
+    const new_client: Client = req.body;
+    
+    const sheet = google.sheets("v4");    
+
+    const append_res = sheet.spreadsheets.values.append({
+        spreadsheetId: process.env.SHEET_ID,
+        range: "Client",
+        valueInputOption: "RAW",
+        auth: sheet_auth(),
+        requestBody: {
+            values: [[new_client.mac_address, new_client.alias, '', 0, 0]]
+        }
+    });
+
+    res.json(append_res)
+}
+
+export const update_one_client: Express.RequestHandler = async (req, res) => {
+    const client: Client = req.body;
+    const id = req.params.id;
+
+
+    const sheet = google.sheets("v4");
+    const read_result = await sheet.spreadsheets.values.get({
+        spreadsheetId: process.env.SHEET_ID,
+        auth: sheet_auth(),
+        range: `${CLIENT_SHEET_ID}!A1:E`
+    });
+
+    const rows = read_result.data.values as string[][];
+    const ser = serialize_rows(rows) as Array<Client>;
+
+    const clientIndex = ser.findIndex((r) => id === r.mac_address);
+    let mut_client = ser[clientIndex];
+    const sheetIndex = clientIndex + 2;
+
+    // We don't want people to change the mac address of the client.
+    delete client.mac_address;
+
+    mut_client = { ...mut_client, ...client };
+
+    const row = [...Object.values(mut_client)];
+
+    const request = {
+        spreadsheetId: process.env.SHEET_ID,
+        range: "Client!A" + sheetIndex + ":E" + sheetIndex,
+        valueInputOption: "RAW",
+        auth: sheet_auth(),
+        resource: {
+            values: [row]
+        }
+    }
+
+    sheet.spreadsheets.values.update(request);
+}

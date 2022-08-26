@@ -40,7 +40,7 @@ export const create_client: Express.RequestHandler = async (req, res) => {
     
     const sheet = google.sheets("v4");    
 
-    const request = {
+    const append_res = sheet.spreadsheets.values.append({
         spreadsheetId: process.env.SHEET_ID,
         range: "Client",
         valueInputOption: "RAW",
@@ -48,9 +48,9 @@ export const create_client: Express.RequestHandler = async (req, res) => {
         requestBody: {
             values: [[new_client.mac_address, new_client.alias, '', 0, 0]]
         }
-    }
+    });
 
-    sheet.spreadsheets.values.append(request);
+    res.json(append_res)
 }
 
 export const update_one_client: Express.RequestHandler = async (req, res) => {

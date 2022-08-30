@@ -1,13 +1,14 @@
-import { CheckInInput, Event, EventInput } from './../models/checkin';
+import { CheckIn, CheckInInput, Event, EventInput } from './../models/checkin';
 import { Client } from '../models/client';
 import Express from "express";
 import { google } from "googleapis";
 import { serialize_rows, sheet_auth } from "../utils/sheets";
 import { v4 } from 'uuid';
 import { parse_mag_stripe } from '../utils/card';
+import { check_dup_student } from '../utils/checkInDup';
 
 const EVENT_SHEET_ID = "EVENTS";
-const CHECKIN_SHEET_ID = "CHECKINS";
+export const CHECKIN_SHEET_ID = "CHECKINS";
 export const CLIENT_SHEET_ID = "CLIENT";
 
 export const create_check_in: Express.RequestHandler = async (req, res) => {
@@ -29,17 +30,21 @@ export const create_check_in: Express.RequestHandler = async (req, res) => {
 
   const event_id = client?.event_id;
 
-  const insert_result = await sheet.spreadsheets.values.append({
-    spreadsheetId: process.env.SHEET_ID,
-    auth: sheet_auth(),
-    range: CHECKIN_SHEET_ID,
-    valueInputOption: "RAW",
-    requestBody: {
-      values: [[v4(), event_id, check_in.student_id, Date.now()]]
-    }
-  });
-
-  res.json(insert_result.data);
+  if (await check_dup_student(event_id, check_in.student_id)) {
+    res.end();
+  } else {
+    const insert_result = await sheet.spreadsheets.values.append({
+      spreadsheetId: process.env.SHEET_ID,
+      auth: sheet_auth(),
+      range: CHECKIN_SHEET_ID,
+      valueInputOption: "RAW",
+      requestBody: {
+        values: [[v4(), event_id, check_in.student_id, Date.now()]]
+      }
+    });
+  
+    res.json(insert_result.data);
+  }
 }
 
 export const create_event: Express.RequestHandler = async (req, res) => {

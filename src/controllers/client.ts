@@ -1,6 +1,7 @@
 import Express from "express";
 import { google } from "googleapis";
 import { Client } from "../models/client";
+import { check_dup_client } from "../utils/clientDup";
 import { serialize_rows, sheet_auth } from "../utils/sheets";
 import { CLIENT_SHEET_ID } from "./checkins";
 
@@ -40,17 +41,21 @@ export const create_client: Express.RequestHandler = async (req, res) => {
     
     const sheet = google.sheets("v4");    
 
-    const append_res = sheet.spreadsheets.values.append({
-        spreadsheetId: process.env.SHEET_ID,
-        range: "Client",
-        valueInputOption: "RAW",
-        auth: sheet_auth(),
-        requestBody: {
-            values: [[new_client.mac_address, new_client.alias, '', 0, 0]]
-        }
-    });
-
-    res.json(append_res)
+    if (await check_dup_client(new_client.mac_address, new_client.alias)) {
+        res.end()
+    } else {
+        const append_res = sheet.spreadsheets.values.append({
+            spreadsheetId: process.env.SHEET_ID,
+            range: "Client",
+            valueInputOption: "RAW",
+            auth: sheet_auth(),
+            requestBody: {
+                values: [[new_client.mac_address, new_client.alias, '', 0, 0]]
+            }
+        });
+    
+        res.json(append_res)
+    }
 }
 
 export const update_one_client: Express.RequestHandler = async (req, res) => {

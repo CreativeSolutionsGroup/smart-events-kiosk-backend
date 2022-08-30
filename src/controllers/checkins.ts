@@ -5,7 +5,7 @@ import { google } from "googleapis";
 import { serialize_rows, sheet_auth } from "../utils/sheets";
 import { v4 } from 'uuid';
 import { parse_mag_stripe } from '../utils/card';
-import { check_dup_student } from '../utils/checkInDup';
+import { check_dup_checkIn } from '../utils/checkInDup';
 
 const EVENT_SHEET_ID = "EVENTS";
 export const CHECKIN_SHEET_ID = "CHECKINS";
@@ -30,8 +30,8 @@ export const create_check_in: Express.RequestHandler = async (req, res) => {
 
   const event_id = client?.event_id;
 
-  if (await check_dup_student(event_id, check_in.student_id)) {
-    res.end();
+  if (await check_dup_checkIn(event_id, check_in.student_id)) {
+    res.status(400).end()
   } else {
     const insert_result = await sheet.spreadsheets.values.append({
       spreadsheetId: process.env.SHEET_ID,

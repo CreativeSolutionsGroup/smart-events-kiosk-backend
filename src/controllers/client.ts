@@ -42,7 +42,7 @@ export const create_client: Express.RequestHandler = async (req, res) => {
     const sheet = google.sheets("v4");    
 
     if (await check_dup_client(new_client.mac_address, new_client.alias)) {
-        res.end()
+        res.status(400).end()
     } else {
         const append_res = sheet.spreadsheets.values.append({
             spreadsheetId: process.env.SHEET_ID,

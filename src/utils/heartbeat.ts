@@ -22,6 +22,11 @@ export const initHeartbeat = (app) => {
             const ser = serialize_rows(rows) as Array<Client>;
 
             const clientIndex = ser.findIndex((r) => hb.mac_address === r.mac_address);
+
+            if (clientIndex == -1) {
+                return;
+            }
+
             let client = ser[clientIndex];
             const sheetIndex = clientIndex + 2;
 

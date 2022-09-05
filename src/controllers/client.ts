@@ -94,5 +94,7 @@ export const update_one_client: Express.RequestHandler = async (req, res) => {
         }
     }
 
-    sheet.spreadsheets.values.update(request);
+    const result = sheet.spreadsheets.values.update(request);
+
+    res.json(result)
 }

@@ -1,4 +1,4 @@
-import { CheckIn, CheckInInput, Event, EventInput } from './../models/checkin';
+import { CheckIn, CheckInInput, Event, EventInput, EventUpdate } from './../models/checkin';
 import { Client } from '../models/client';
 import Express from "express";
 import { google } from "googleapis";
@@ -65,6 +65,43 @@ export const create_event: Express.RequestHandler = async (req, res) => {
   });
 
   res.json(id);
+}
+
+export const update_one_event: Express.RequestHandler = async (req, res) => {
+  const event_update: EventUpdate = req.body;
+
+  const sheet = google.sheets("v4");
+
+  const read_result = await sheet.spreadsheets.values.get({
+      spreadsheetId: process.env.SHEET_ID,
+      auth: sheet_auth(),
+      // TODO: Update range to reflect event sheet (proper rows/cols), not client sheet
+      range: `${EVENT_SHEET_ID}!A1:E`
+  });
+
+  const rows = read_result.data.values as string[][];
+  const ser = serialize_rows(rows) as Array<Event>;
+
+  const eventIndex = ser.findIndex((r) => event_update.old_alias === r.alias);
+  let mut_event = ser[eventIndex];
+  const sheetIndex = eventIndex + 2;
+
+  mut_event.alias = event_update.new_alias;
+
+  const row = [...Object.values(mut_event)];
+
+  const request = {
+      spreadsheetId: process.env.SHEET_ID,
+      // TODO: Update range to reflet event sheet (proper rows/cols), not client sheet
+      range: "Event!A" + sheetIndex + ":E" + sheetIndex,
+      valueInputOption: "RAW",
+      auth: sheet_auth(),
+      resource: {
+          values: [row]
+      }
+  }
+
+  sheet.spreadsheets.values.update(request);
 }
 
 export const read_all_events: Express.RequestHandler = async (req, res) => {

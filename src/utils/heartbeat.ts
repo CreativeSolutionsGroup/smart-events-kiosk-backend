@@ -9,7 +9,12 @@ export const initHeartbeat = (app) => {
 
     ws.app.ws('/heartbeat', (ws, res) => {
         ws.on('message', async (message: string) => {
-            const hb: Heartbeat = JSON.parse(message);
+            let hb: Heartbeat
+            try {
+                hb = JSON.parse(message);
+            } catch (error) {
+                return
+            }
 
             const sheet = google.sheets("v4");
             const read_result = await sheet.spreadsheets.values.get({

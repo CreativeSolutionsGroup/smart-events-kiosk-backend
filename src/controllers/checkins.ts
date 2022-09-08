@@ -75,8 +75,7 @@ export const update_one_event: Express.RequestHandler = async (req, res) => {
   const read_result = await sheet.spreadsheets.values.get({
       spreadsheetId: process.env.SHEET_ID,
       auth: sheet_auth(),
-      // TODO: Update range to reflect event sheet (proper rows/cols), not client sheet
-      range: `${EVENT_SHEET_ID}!A1:E`
+      range: `${EVENT_SHEET_ID}!A1:D`
   });
 
   const rows = read_result.data.values as string[][];
@@ -92,8 +91,7 @@ export const update_one_event: Express.RequestHandler = async (req, res) => {
 
   const request = {
       spreadsheetId: process.env.SHEET_ID,
-      // TODO: Update range to reflet event sheet (proper rows/cols), not client sheet
-      range: "Event!A" + sheetIndex + ":E" + sheetIndex,
+      range: "Event!A" + sheetIndex + ":D" + sheetIndex,
       valueInputOption: "RAW",
       auth: sheet_auth(),
       resource: {

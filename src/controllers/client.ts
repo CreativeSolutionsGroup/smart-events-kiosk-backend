@@ -50,7 +50,7 @@ export const create_client: Express.RequestHandler = async (req, res) => {
             valueInputOption: "RAW",
             auth: sheet_auth(),
             requestBody: {
-                values: [[new_client.mac_address, new_client.alias, '', 0, 0]]
+                values: [[new_client.mac_address, new_client.alias, new_client.event_id, 0, 0]]
             }
         });
     

@@ -2,11 +2,10 @@ import { CheckIn, CheckInInput, Event, EventInput } from './../models/checkin';
 import { Client } from '../models/client';
 import Express from "express";
 import { google } from "googleapis";
-import { serialize_rows, sheet_auth } from "../utils/sheets";
+import { CHECKIN_SHEET_ID, CLIENT_SHEET_ID, EVENT_SHEET_ID, serialize_rows, sheet_auth } from "../utils/sheets";
 import { v4 } from 'uuid';
 import { parse_mag_stripe } from '../utils/card';
-import { check_dup_checkIn } from '../utils/checkInDup';
-import { CHECKIN_SHEET_ID, CLIENT_SHEET_ID, EVENT_SHEET_ID } from '../utils/sheetID';
+import { check_dup_checkIn } from '../utils/checkin-dup';
 
 export const create_check_in: Express.RequestHandler = async (req, res) => {
   let check_in: CheckInInput = req.body;

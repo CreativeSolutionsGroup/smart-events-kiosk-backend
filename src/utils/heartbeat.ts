@@ -1,8 +1,7 @@
 import expressWS from 'express-ws';
 import { google } from 'googleapis';
 import { Heartbeat, Client } from '../models/client';
-import { CLIENT_SHEET_ID } from './sheetID';
-import { serialize_rows, sheet_auth } from './sheets';
+import { CLIENT_SHEET_ID, serialize_rows, sheet_auth } from './sheets';
 
 export const initHeartbeat = (app) => {
     const ws = expressWS(app);

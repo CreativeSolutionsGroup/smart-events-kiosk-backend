@@ -1,9 +1,8 @@
 import Express from "express";
 import { google } from "googleapis";
 import { Client } from "../models/client";
-import { check_dup_client } from "../utils/clientDup";
-import { CLIENT_SHEET_ID } from "../utils/sheetID";
-import { serialize_rows, sheet_auth } from "../utils/sheets";
+import { check_dup_client } from "../utils/client-dup";
+import { CLIENT_SHEET_ID, serialize_rows, sheet_auth } from "../utils/sheets";
 
 export const read_one_client: Express.RequestHandler = async (req, res) => {
     const sheet = google.sheets("v4");

@@ -1,7 +1,7 @@
 import { google } from "googleapis";
-import { CLIENT_SHEET_ID } from "../controllers/checkins";
 import { Client } from "../models/client";
 import { serialize_rows, sheet_auth } from "../utils/sheets";
+import { CLIENT_SHEET_ID } from "./sheetID";
 
 export const check_dup_client = async (mac_address, alias) => {
     const sheet = google.sheets("v4");

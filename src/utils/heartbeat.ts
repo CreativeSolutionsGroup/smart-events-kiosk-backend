@@ -1,7 +1,7 @@
 import expressWS from 'express-ws';
 import { google } from 'googleapis';
-import { CLIENT_SHEET_ID } from '../controllers/checkins';
 import { Heartbeat, Client } from '../models/client';
+import { CLIENT_SHEET_ID } from './sheetID';
 import { serialize_rows, sheet_auth } from './sheets';
 
 export const initHeartbeat = (app) => {

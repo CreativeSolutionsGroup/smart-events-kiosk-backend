@@ -6,10 +6,7 @@ import { serialize_rows, sheet_auth } from "../utils/sheets";
 import { v4 } from 'uuid';
 import { parse_mag_stripe } from '../utils/card';
 import { check_dup_checkIn } from '../utils/checkInDup';
-
-const EVENT_SHEET_ID = "EVENTS";
-export const CHECKIN_SHEET_ID = "CHECKINS";
-export const CLIENT_SHEET_ID = "CLIENT";
+import { CHECKIN_SHEET_ID, CLIENT_SHEET_ID, EVENT_SHEET_ID } from '../utils/sheetID';
 
 export const create_check_in: Express.RequestHandler = async (req, res) => {
   let check_in: CheckInInput = req.body;

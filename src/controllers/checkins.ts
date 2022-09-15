@@ -67,6 +67,40 @@ export const create_event: Express.RequestHandler = async (req, res) => {
   res.json(id);
 }
 
+export const delete_event: Express.RequestHandler = async (req, res) => {
+  const id = req.params.id;
+  
+  const sheet = google.sheets("v4");
+  const read_result = await sheet.spreadsheets.values.get({
+    spreadsheetId: process.env.SHEET_ID,
+    auth: sheet_auth(),
+    range: `${EVENT_SHEET_ID}!A1:C`
+  });
+  
+  const rows = read_result.data.values as string[][]
+  const ser = serialize_rows(rows) as Array<Event>
+  
+  const eventIndex = ser.findIndex((r) => id === r.id)
+  if (eventIndex === -1) {
+    res.status(404).end()
+  } else {
+    const sheetIndex = eventIndex + 2;
+
+    const request = {
+      spreadsheetId: process.env.SHEET_ID,
+      auth: sheet_auth(),
+      range: "Events!A" + sheetIndex + ":C" + sheetIndex,
+      valueInputOption: "RAW",
+      requestBody: {
+        values: [["","",""]]
+      }
+    }
+  
+    const result = sheet.spreadsheets.values.update(request)
+    res.json(result)
+  }
+}
+
 export const read_all_events: Express.RequestHandler = async (req, res) => {
   const sheet = google.sheets("v4");
 

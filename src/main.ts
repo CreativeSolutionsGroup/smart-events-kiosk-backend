@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-import { create_check_in, create_event, read_all_events } from "./controllers/checkins";
+import { create_check_in, create_event, delete_event, read_all_events } from "./controllers/checkins";
 import { read_all_clients, read_one_client, create_client, update_one_client, remove_one_client } from "./controllers/client";
 
 var app = express()
@@ -17,7 +17,10 @@ const v1 = express.Router();
 
 v1.route("/event")
   .get(read_all_events)
-  .post(create_event);
+  .post(create_event)
+
+v1.route("/event/:id")
+  .delete(delete_event)
 
 v1.route("/checkin")
   .post(create_check_in)

@@ -18,7 +18,9 @@ const v1 = express.Router();
 v1.route("/event")
   .get(read_all_events)
   .post(create_event)
-  .post(update_one_event)
+
+v1.route("/event/:id")
+  .put(update_one_event)
 
 v1.route("/checkin")
   .post(create_check_in)

@@ -1,4 +1,4 @@
-import { CheckIn, CheckInInput, Event, EventInput, EventUpdate } from './../models/checkin';
+import { CheckIn, CheckInInput, Event, EventInput } from './../models/checkin';
 import { Client } from '../models/client';
 import Express from "express";
 import { google } from "googleapis";
@@ -68,10 +68,10 @@ export const create_event: Express.RequestHandler = async (req, res) => {
 }
 
 export const update_one_event: Express.RequestHandler = async (req, res) => {
-  const event_update: EventUpdate = req.body;
+  const event_update: EventInput = req.body;
+  const id = req.params.id;
 
   const sheet = google.sheets("v4");
-
   const read_result = await sheet.spreadsheets.values.get({
       spreadsheetId: process.env.SHEET_ID,
       auth: sheet_auth(),
@@ -81,25 +81,31 @@ export const update_one_event: Express.RequestHandler = async (req, res) => {
   const rows = read_result.data.values as string[][];
   const ser = serialize_rows(rows) as Array<Event>;
 
-  const eventIndex = ser.findIndex((r) => event_update.old_alias === r.alias);
-  let mut_event = ser[eventIndex];
-  const sheetIndex = eventIndex + 2;
-
-  mut_event.alias = event_update.new_alias;
-
-  const row = [...Object.values(mut_event)];
-
-  const request = {
-      spreadsheetId: process.env.SHEET_ID,
-      range: "Event!A" + sheetIndex + ":D" + sheetIndex,
-      valueInputOption: "RAW",
-      auth: sheet_auth(),
-      resource: {
-          values: [row]
-      }
+  const eventIndex = ser.findIndex((r) => id === r.id);
+  if (eventIndex === -1) {
+    res.status(404).end()
+  } else {
+    let mut_event = ser[eventIndex];
+    const sheetIndex = eventIndex + 2;
+  
+    mut_event.alias = event_update.alias;
+  
+    const row = [...Object.values(mut_event)];
+  
+    const request = {
+        spreadsheetId: process.env.SHEET_ID,
+        range: "Events!A" + sheetIndex + ":C" + sheetIndex,
+        valueInputOption: "RAW",
+        auth: sheet_auth(),
+        resource: {
+            values: [row]
+        }
+    }
+  
+    const result = sheet.spreadsheets.values.update(request);
+  
+    res.json(result);
   }
-
-  sheet.spreadsheets.values.update(request);
 }
 
 export const read_all_events: Express.RequestHandler = async (req, res) => {

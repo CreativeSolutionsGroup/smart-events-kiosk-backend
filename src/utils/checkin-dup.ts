@@ -1,7 +1,6 @@
 import { google } from "googleapis";
-import { CHECKIN_SHEET_ID } from "../controllers/checkins";
 import { CheckIn } from "../models/checkin";
-import { serialize_rows, sheet_auth } from "../utils/sheets";
+import { CHECKIN_SHEET_ID, serialize_rows, sheet_auth } from "./sheets";
 
 export const check_dup_checkIn = async (eventId, studentId) => {
     const sheet = google.sheets("v4");

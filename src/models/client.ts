@@ -3,7 +3,7 @@ export interface Client {
   alias: string
   event_id: string
   last_heartbeat: number
-  status: boolean
+  status: boolean|string
 }
 
 export interface Heartbeat {

@@ -6,8 +6,8 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-import { create_check_in, create_event, update_one_event, read_all_events, delete_event } from "./controllers/checkins";
-import { read_all_clients, read_one_client, create_client, update_one_client } from "./controllers/client";
+import { create_check_in, create_event, delete_event, get_student_events, read_all_events, update_one_event } from "./controllers/checkins";
+import { read_all_clients, read_one_client, create_client, update_one_client, remove_one_client } from "./controllers/client";
 
 var app = express()
 app.use(cors())
@@ -25,6 +25,9 @@ v1.route("/event/:id")
 
 v1.route("/checkin")
   .post(create_check_in)
+
+v1.route("/checkin/:id")
+  .get(get_student_events)
 
 v1.route("/client")
   .get(read_all_clients)

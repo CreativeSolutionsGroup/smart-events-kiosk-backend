@@ -144,11 +144,28 @@ export const read_all_events: Express.RequestHandler = async (req, res) => {
   const read_result = await sheet.spreadsheets.values.get({
     spreadsheetId: process.env.SHEET_ID,
     auth: sheet_auth(),
-    range: `${EVENT_SHEET_ID}!A1:D`
+    range: `${EVENT_SHEET_ID}!A1:C`
   });
 
   const rows = read_result.data.values as string[][];
   const ser = serialize_rows(rows);
 
   res.json(ser);
+}
+
+export const get_student_events: Express.RequestHandler = async (req,res) => {
+  const studentId = req.params.id
+  const sheet = google.sheets("v4");
+
+  const read_result = await sheet.spreadsheets.values.get({
+    spreadsheetId: process.env.SHEET_ID,
+    auth: sheet_auth(),
+    range: `${CHECKIN_SHEET_ID}!A1:D`
+  });
+
+  const rows = read_result.data.values as string[][];
+  const ser = serialize_rows(rows) as Array<CheckIn>;
+  const studentEvents = ser.filter((r) => studentId === r.student_id)
+
+  res.json(studentEvents)
 }

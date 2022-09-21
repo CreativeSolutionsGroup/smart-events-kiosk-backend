@@ -18,7 +18,7 @@ export const read_one_client: Express.RequestHandler = async (req, res) => {
     const client = clients.find(c => c.mac_address === req.params.id);
 
     clients = clients.map((client) => {
-        client.status = Boolean(client.status);
+        client.status = client.status === "TRUE";
         return client;
     })
 
@@ -37,7 +37,7 @@ export const read_all_clients: Express.RequestHandler = async (req, res) => {
     let clients = serialize_rows(rows) as Array<Client>;
 
     clients = clients.map((client) => {
-        client.status = Boolean(client.status);
+        client.status = client.status === "TRUE";
         return client;
     })
 

@@ -1,4 +1,6 @@
 import { google } from "googleapis";
+import { RedisClientType } from "redis";
+import { CheckIn } from "../models/checkin";
 import { Client } from "../models/client";
 import { CLIENT_SHEET_ID, serialize_rows, sheet_auth } from "./sheets";
 

@@ -8,10 +8,16 @@ dotenv.config();
 
 import { create_check_in, create_event, delete_event, get_student_events, read_all_checkins, read_all_events, update_one_event } from "./controllers/checkins";
 import { read_all_clients, read_one_client, create_client, update_one_client, remove_one_client } from "./controllers/client";
+import { initialize_client } from "./utils/redis"
 
 var app = express()
 app.use(cors())
 app.use(express.json())
+
+const redis_client = initialize_client();
+
+(async () => app.set("cache", await redis_client))();
+
 
 const v1 = express.Router();
 

@@ -13,11 +13,17 @@ export const create_check_in: Express.RequestHandler = async (req, res) => {
 
   const sheet = google.sheets("v4");
 
-  const read_result = await sheet.spreadsheets.values.get({
-    spreadsheetId: process.env.SHEET_ID,
-    auth: sheet_auth(),
-    range: `${CLIENT_SHEET_ID}!A1:C`
-  });
+  var read_result;
+  try {
+    read_result = await sheet.spreadsheets.values.get({
+      spreadsheetId: process.env.SHEET_ID,
+      auth: sheet_auth(),
+      range: `${CLIENT_SHEET_ID}!A1:C`
+    });
+  } catch (e) {
+    res.status(503).json(e)
+    return;
+  }
 
   const rows = read_result.data.values as string[][];
   const ser = serialize_rows(rows) as Array<Client>;
@@ -26,21 +32,27 @@ export const create_check_in: Express.RequestHandler = async (req, res) => {
 
   const event_id = client?.event_id;
 
-  if (await check_dup_checkIn(event_id, check_in.student_id)) {
-    res.status(400).end()
-  } else {
-    const insert_result = await sheet.spreadsheets.values.append({
-      spreadsheetId: process.env.SHEET_ID,
-      auth: sheet_auth(),
-      range: CHECKIN_SHEET_ID,
-      valueInputOption: "RAW",
-      requestBody: {
-        values: [[v4(), event_id, check_in.student_id, Date.now()]]
-      }
-    });
-  
-    res.json(insert_result.data);
+  try {
+    if (await check_dup_checkIn(event_id, check_in.student_id)) {
+      res.status(400).end()
+    } else {
+      const insert_result = await sheet.spreadsheets.values.append({
+        spreadsheetId: process.env.SHEET_ID,
+        auth: sheet_auth(),
+        range: CHECKIN_SHEET_ID,
+        valueInputOption: "RAW",
+        requestBody: {
+          values: [[v4(), event_id, check_in.student_id, Date.now()]]
+        }
+      });
+
+      res.json(insert_result.data);
+    }
+  } catch (e) {
+    res.status(503).json(e);
+    return;
   }
+  
 }
 
 export const create_event: Express.RequestHandler = async (req, res) => {
@@ -69,9 +81,9 @@ export const update_one_event: Express.RequestHandler = async (req, res) => {
 
   const sheet = google.sheets("v4");
   const read_result = await sheet.spreadsheets.values.get({
-      spreadsheetId: process.env.SHEET_ID,
-      auth: sheet_auth(),
-      range: `${EVENT_SHEET_ID}!A1:D`
+    spreadsheetId: process.env.SHEET_ID,
+    auth: sheet_auth(),
+    range: `${EVENT_SHEET_ID}!A1:D`
   });
 
   const rows = read_result.data.values as string[][];
@@ -81,7 +93,7 @@ export const update_one_event: Express.RequestHandler = async (req, res) => {
   if (eventIndex === -1) {
     res.status(404).end();
     return;
-  } 
+  }
   let mut_event = ser[eventIndex];
   const sheetIndex = eventIndex + 2;
 
@@ -90,13 +102,13 @@ export const update_one_event: Express.RequestHandler = async (req, res) => {
   const row = [...Object.values(mut_event)];
 
   const request = {
-      spreadsheetId: process.env.SHEET_ID,
-      range: "Events!A" + sheetIndex + ":C" + sheetIndex,
-      valueInputOption: "RAW",
-      auth: sheet_auth(),
-      resource: {
-          values: [row]
-      }
+    spreadsheetId: process.env.SHEET_ID,
+    range: "Events!A" + sheetIndex + ":C" + sheetIndex,
+    valueInputOption: "RAW",
+    auth: sheet_auth(),
+    resource: {
+      values: [row]
+    }
   }
 
   const result = sheet.spreadsheets.values.update(request);
@@ -106,17 +118,17 @@ export const update_one_event: Express.RequestHandler = async (req, res) => {
 
 export const delete_event: Express.RequestHandler = async (req, res) => {
   const id = req.params.id;
-  
+
   const sheet = google.sheets("v4");
   const read_result = await sheet.spreadsheets.values.get({
     spreadsheetId: process.env.SHEET_ID,
     auth: sheet_auth(),
     range: `${EVENT_SHEET_ID}!A1:C`
   });
-  
+
   const rows = read_result.data.values as string[][]
   const ser = serialize_rows(rows) as Array<Event>
-  
+
   const eventIndex = ser.findIndex((r) => id === r.id)
   if (eventIndex === -1) {
     res.status(404).end()
@@ -129,10 +141,10 @@ export const delete_event: Express.RequestHandler = async (req, res) => {
       range: "Events!A" + sheetIndex + ":C" + sheetIndex,
       valueInputOption: "RAW",
       requestBody: {
-        values: [["","",""]]
+        values: [["", "", ""]]
       }
     }
-  
+
     const result = sheet.spreadsheets.values.update(request)
     res.json(result)
   }
@@ -153,7 +165,7 @@ export const read_all_events: Express.RequestHandler = async (req, res) => {
   res.json(ser);
 }
 
-export const get_student_events: Express.RequestHandler = async (req,res) => {
+export const get_student_events: Express.RequestHandler = async (req, res) => {
   const studentId = req.params.id
   const sheet = google.sheets("v4");
 

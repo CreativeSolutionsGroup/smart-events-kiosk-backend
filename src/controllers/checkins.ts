@@ -34,6 +34,7 @@ export const create_check_in: Express.RequestHandler = async (req, res) => {
       auth: sheet_auth(),
       range: CHECKIN_SHEET_ID,
       valueInputOption: "RAW",
+      insertDataOption: "INSERT_ROWS",
       requestBody: {
         values: [[v4(), event_id, check_in.student_id, Date.now()]]
       }

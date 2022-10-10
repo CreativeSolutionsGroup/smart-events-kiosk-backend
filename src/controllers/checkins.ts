@@ -34,7 +34,7 @@ export const create_check_in: Express.RequestHandler = async (req, res) => {
 
   try {
     if (await check_dup_checkIn(event_id, check_in.student_id)) {
-      res.status(400).end()
+      res.status(409).end()
     } else {
       const insert_result = await sheet.spreadsheets.values.append({
         spreadsheetId: process.env.SHEET_ID,

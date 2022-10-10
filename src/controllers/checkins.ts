@@ -21,6 +21,7 @@ export const create_check_in: Express.RequestHandler = async (req, res) => {
       range: `${CLIENT_SHEET_ID}!A1:C`
     });
   } catch (e) {
+    console.log("ERROR: Read rate exceeded.");
     res.status(503).json(e)
     return;
   }
@@ -50,6 +51,7 @@ export const create_check_in: Express.RequestHandler = async (req, res) => {
       res.json(insert_result.data);
     }
   } catch (e) {
+    console.log("ERROR: Read rate exceeded.");
     res.status(503).json(e);
     return;
   }

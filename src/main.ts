@@ -1,4 +1,4 @@
-import express from "express";
+import express, { ErrorRequestHandler } from "express";
 import cors from "cors";
 import { initHeartbeat } from "./utils/heartbeat";
 
@@ -9,9 +9,15 @@ dotenv.config();
 import { create_check_in, create_event, delete_event, get_student_events, read_all_checkins, read_all_events, update_one_event } from "./controllers/checkins";
 import { read_all_clients, read_one_client, create_client, update_one_client, remove_one_client } from "./controllers/client";
 
+const error_handler: ErrorRequestHandler = (err, req, res, next) => {
+  console.log("CAUGHT FATAL: " + err);
+  res.status(500).send();
+}
+
 var app = express()
 app.use(cors())
 app.use(express.json())
+app.use(error_handler);
 
 const v1 = express.Router();
 
